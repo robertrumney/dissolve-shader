@@ -7,13 +7,14 @@ Shader "Custom/Dissolve" {
     }
 
     SubShader {
-        Tags { "RenderType" = "Opaque" }
+        Tags { "Queue"="Transparent" "RenderType"="Transparent" }
+        LOD 100
 
         Pass {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-
+            #pragma multi_compile_fog
             #include "UnityCG.cginc"
 
             struct appdata {
@@ -23,6 +24,7 @@ Shader "Custom/Dissolve" {
 
             struct v2f {
                 float2 uv : TEXCOORD0;
+                UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
             };
 
@@ -35,16 +37,24 @@ Shader "Custom/Dissolve" {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv;
+                UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target {
-                fixed4 col = tex2D(_MainTex, i.uv);
                 fixed4 noise = tex2D(_NoiseTex, i.uv);
-                if(noise.r < _DissolveThreshold)
-                    discard;
-                else if(noise.r < _DissolveThreshold + 0.1)
-                    col = _EdgeColor;
+                fixed4 col = tex2D(_MainTex, i.uv);
+                fixed4 edgeCol = _EdgeColor;
+                edgeCol.a = col.a;
+
+                if(noise.r < _DissolveThreshold) {
+                    clip(-1);
+                }
+                else if (noise.r < _DissolveThreshold + 0.1) {
+                    return edgeCol;
+                }
+
+                UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
             }
             ENDCG
