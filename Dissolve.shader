@@ -2,7 +2,7 @@ Shader "Custom/Dissolve" {
     Properties{
         _MainTex("Texture", 2D) = "white" {}
         _DissolveThreshold("Dissolve Threshold", Range(0, 1)) = 0
-        _EdgeColor("Edge Color", Color) = (1, 0, 0, 1)
+        _EdgeColor("Edge Color", Color) = (0, 0, 0, 0)
     }
 
         SubShader{
@@ -41,15 +41,17 @@ Shader "Custom/Dissolve" {
 
                 fixed4 frag(v2f i) : SV_Target {
                     float noiseScale = 15.0;
-                    fixed noise = frac(sin(dot(i.uv ,float2(12.9898,78.233))) * 43758.5453);
+                    fixed noise = frac(sin(dot(i.uv * noiseScale ,float2(12.9898,78.233))) * 43758.5453);
+                    noise = noise * 0.5 + 0.5; // Remap the noise
+
                     fixed4 col = tex2D(_MainTex, i.uv);
                     fixed4 edgeCol = _EdgeColor;
                     edgeCol.a = col.a;
 
-                    if (noise * noiseScale < _DissolveThreshold) {
+                    if (noise < _DissolveThreshold) {
                         clip(-1);
                     }
-                    else if (noise * noiseScale < _DissolveThreshold + 0.1) {
+                    else if (noise < _DissolveThreshold + 0.1) {
                         return edgeCol;
                     }
 
