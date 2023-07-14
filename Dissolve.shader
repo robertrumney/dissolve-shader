@@ -2,8 +2,8 @@ Shader "Custom/Dissolve" {
     Properties {
         _MainTex ("Texture", 2D) = "white" {}
         _DissolveThreshold ("Dissolve Threshold", Range(0, 1)) = 0
-        _DissolveColor ("Dissolve Color", Color) = (1, 0, 0, 1)
-        _DissolveTex ("Dissolve Texture", 2D) = "white" {}
+        _EdgeColor ("Edge Color", Color) = (1, 0, 0, 1)
+        _NoiseTex ("Noise Texture", 2D) = "white" {}
     }
 
     SubShader {
@@ -27,9 +27,9 @@ Shader "Custom/Dissolve" {
             };
 
             sampler2D _MainTex;
-            sampler2D _DissolveTex;
+            sampler2D _NoiseTex;
             float _DissolveThreshold;
-            float4 _DissolveColor;
+            float4 _EdgeColor;
 
             v2f vert (appdata v) {
                 v2f o;
@@ -40,11 +40,11 @@ Shader "Custom/Dissolve" {
 
             fixed4 frag (v2f i) : SV_Target {
                 fixed4 col = tex2D(_MainTex, i.uv);
-                fixed dissolveAmount = tex2D(_DissolveTex, i.uv).r;
-                if(dissolveAmount < _DissolveThreshold)
+                fixed4 noise = tex2D(_NoiseTex, i.uv);
+                if(noise.r < _DissolveThreshold)
                     discard;
-                else if(dissolveAmount < _DissolveThreshold + 0.05)
-                    col = _DissolveColor;
+                else if(noise.r < _DissolveThreshold + 0.1)
+                    col = _EdgeColor;
                 return col;
             }
             ENDCG
