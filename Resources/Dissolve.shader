@@ -40,7 +40,7 @@ Shader "Custom/Dissolve" {
                 }
 
                 fixed4 frag(v2f i) : SV_Target {
-                    float noiseScale = 15.0;
+                    float noiseScale = 1.0;
                     fixed noise = frac(sin(dot(i.uv * noiseScale ,float2(12.9898,78.233))) * 43758.5453);
                     noise = noise * 0.5 + 0.5; // Remap the noise
 
