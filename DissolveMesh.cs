@@ -10,7 +10,7 @@ public class DissolveMesh : MonoBehaviour
     public float dissolveTime = 2f;
 
     private Material material;
-    private float dissolveProgress = 0f;
+    private float dissolveProgress = 0.3f;
 
     private void Start()
     {
