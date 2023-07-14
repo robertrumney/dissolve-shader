@@ -14,17 +14,17 @@ public class DissolveMesh : MonoBehaviour
 
     private void Start()
     {
-        material = GetComponent<Renderer>().material;
-        material.shader = Shader.Find("Custom/Dissolve");
-        material.SetTexture("_DissolveTex", dissolveTexture);
-        material.SetColor("_DissolveColor", dissolveColor);
-
         StartCoroutine(DissolveAfterDelay());
     }
 
     private IEnumerator DissolveAfterDelay()
     {
         yield return new WaitForSeconds(delayBeforeStart);
+
+        material = GetComponent<Renderer>().material;
+        material.shader = Shader.Find("Custom/Dissolve");
+        material.SetTexture("_DissolveTex", dissolveTexture);
+        material.SetColor("_DissolveColor", dissolveColor);
 
         while (dissolveProgress < 1f)
         {
