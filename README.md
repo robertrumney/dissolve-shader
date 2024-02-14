@@ -1,6 +1,6 @@
 # Unity Dissolve Shader
 
-This repository contains a custom dissolve shader for Unity, capable of creating a dynamic dissolve effect on 3D objects. It can be particularly useful in games for creating effects such as enemies disintegrating or objects phasing in/out.
+A custom dissolve shader for Unity, capable of creating a dynamic dissolve effect on 3D objects. It can be particularly useful in games for creating effects such as enemies disintegrating or objects phasing in/out.
 
 The shader uses a procedural noise function to generate a unique dissolve pattern, and allows you to adjust the dissolve threshold and edge color to fine-tune the effect.
 
